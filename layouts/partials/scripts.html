@@ -24,3 +24,32 @@
  <script async src="https://unpkg.com/mermaid@8.2.3/dist/mermaid.min.js"></script>
  {{ end }}
 
+{{ if  .Params.viz}}
+<!-- graphviz rendering -->
+<script type="text/javascript" src="/js/viz.js"> </script>
+<script type="text/javascript" src="/js/viz-lite.js"> </script>
+<script type="text/javascript">
+    (function () {
+        var vizPrefix = "language-viz-";
+        Array.prototype.forEach.call(document.querySelectorAll("[class^=" + vizPrefix + "]"), function (x) {
+            x.style.display = 'none'
+            x.parentNode.style.backgroundColor = "transparent"
+
+            var engine;
+            x.getAttribute("class").split(" ").forEach(function (cls) {
+                if (cls.startsWith(vizPrefix)) {
+                    engine = cls.substr(vizPrefix.length);
+                }
+            });
+
+            var viz = new Viz();
+            viz.renderSVGElement(x.innerText, { engine: engine })
+                .then(function (element) {
+                    element.style.width = "100%";
+                    x.parentNode.insertBefore(element, x);
+                })
+        });
+    })();
+</script>
+{{ end }}
+
